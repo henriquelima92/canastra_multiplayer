@@ -2,10 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Deck : MonoBehaviour
 {
     public List<Card> Cards;
+    public List<Sprite> Suits;
+    public GameObject CardReference;
+    public Transform Holder;
+
 
     private void Start()
     {
@@ -21,6 +26,40 @@ public class Deck : MonoBehaviour
         System.Random r = new System.Random();
         Cards = Cards.Select(x => new { value = x, order = r.Next() })
             .OrderBy(x => x.order).Select(x => x.value).ToList();
+
+        PlayerDeckCreator(Cards.Take(11).ToList());
+    }
+
+    private void PlayerDeckCreator(List<Card> Cards)
+    {
+        for(int i=0; i< Cards.Count; i++)
+        {
+            GameObject card = GameObject.Instantiate(CardReference, Holder);
+            CardBuilder builder = card.GetComponent<CardBuilder>();
+            string cardValue = "";
+            switch (Cards[i].CurrentCardValue)
+            {
+                case CardValue.Ace:
+                    cardValue = "A";
+                    break;
+                case CardValue.Jack:
+                    cardValue = "J";
+                    break;
+                case CardValue.Queen:
+                    cardValue = "Q";
+                    break;
+                case CardValue.King:
+                    cardValue = "K";
+                    break;
+                case CardValue.Joker:
+                    cardValue = "Joker";
+                    break;
+                default:
+                    cardValue = ((int)Cards[i].CurrentCardValue + 1).ToString();
+                    break;
+            }
+            builder.BuildCard(cardValue, Suits[(int)Cards[i].CurrentSuit]);
+        }
     }
 
     private void JokerGenerator()
