@@ -10,7 +10,9 @@ public class Deck : MonoBehaviour
     public List<Sprite> Suits;
     public GameObject CardReference;
     public Transform Holder;
+    public Transform DeckHolder;
 
+    public CardBuilder CurrentCard;
 
     private void Start()
     {
@@ -27,7 +29,52 @@ public class Deck : MonoBehaviour
         Cards = Cards.Select(x => new { value = x, order = r.Next() })
             .OrderBy(x => x.order).Select(x => x.value).ToList();
 
-        PlayerDeckCreator(Cards.Take(11).ToList());
+        //PlayerDeckCreator(Cards.Take(11).ToList());
+
+        SetDeckLastCard(Cards.Last());
+    }
+
+    public void GrabDeckCard()
+    {
+        CardBuilder card = CurrentCard;
+        CurrentCard = null;
+        card.transform.SetParent(Holder);
+        card.transform.position = Vector3.zero;
+        SetDeckLastCard(Cards.Last());
+        card.GetComponent<Button>().onClick.RemoveAllListeners();
+    }
+
+    private void SetDeckLastCard(Card c)
+    {
+        GameObject card = GameObject.Instantiate(CardReference, DeckHolder);
+        CardBuilder builder = card.GetComponent<CardBuilder>();
+        string cardValue = "";
+        switch (c.CurrentCardValue)
+        {
+            case CardValue.Ace:
+                cardValue = "A";
+                break;
+            case CardValue.Jack:
+                cardValue = "J";
+                break;
+            case CardValue.Queen:
+                cardValue = "Q";
+                break;
+            case CardValue.King:
+                cardValue = "K";
+                break;
+            case CardValue.Joker:
+                cardValue = "Joker";
+                break;
+            default:
+                cardValue = ((int)c.CurrentCardValue + 1).ToString();
+                break;
+        }
+        builder.BuildCard(cardValue, Suits[(int)c.CurrentSuit]);
+        Cards.Remove(c);
+
+        CurrentCard = builder;
+        CurrentCard.GetComponent<Button>().onClick.AddListener(GrabDeckCard);
     }
 
     private void PlayerDeckCreator(List<Card> Cards)
