@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class Deck : MonoBehaviour
 {
+    public static Deck Instance;
     public List<Card> Cards;
     public List<Sprite> Suits;
     public GameObject CardReference;
@@ -16,6 +17,8 @@ public class Deck : MonoBehaviour
 
     private void Start()
     {
+        Instance = this;
+
         Cards = new List<Card>();
 
         DeckGenerator(Suit.Diamond);
