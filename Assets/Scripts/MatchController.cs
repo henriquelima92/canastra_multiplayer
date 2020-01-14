@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
-public enum Turn
+public enum Team
 {
     Team1,
     Team2
@@ -10,26 +11,41 @@ public enum Turn
 
 public class MatchController : MonoBehaviour
 {
-    public static MatchController Instance;
+    public Team Turn;
+    public List<Player> ListPlayers;
 
-    [SerializeField]
-    private Turn turn;
-
-    private void Awake()
+    private void Start()
     {
-        Instance = this;
+        Turn = (Random.Range(0, 100) < 50 ? Team.Team1 : Team.Team2);
+        TurnSetup();
     }
 
-    public void ChangeTurn()
+    private void Update()
     {
-        switch(turn)
+        if(Input.GetKeyDown(KeyCode.H))
         {
-            case Turn.Team1:
-                turn = Turn.Team2;
-            break;
-            case Turn.Team2:
-                turn = Turn.Team1;
-            break;
+            ChangeTurn();
         }
+    }
+
+
+    private void TurnSetup()
+    {
+        CardHolder cardHolder = Deck.Instance.CurrentStackCard;
+        for (int i = 0; i < ListPlayers.Count; i++)
+        {
+            if (ListPlayers[i].MyTeam == Turn)
+            {
+                cardHolder.GetComponent<Button>().onClick.AddListener(ListPlayers[i].AddCardToHand);
+                break;
+            }
+        }
+    }
+
+    private void ChangeTurn()
+    {
+        Deck.Instance.SetCardFromStack();
+        Turn = Turn == Team.Team1 ? Team.Team2 : Team.Team1;
+        TurnSetup();
     }
 }

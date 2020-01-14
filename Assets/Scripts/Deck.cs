@@ -10,47 +10,29 @@ public class Deck : MonoBehaviour
     public List<Card> Cards;
     public List<Sprite> Suits;
     public GameObject CardReference;
-    public Transform Holder;
     public Transform DeckHolder;
 
-    public CardBuilder CurrentCard;
+    public List<Transform> PlayersCardHolder;
+    public CardHolder CurrentStackCard;
 
-    private void Start()
+    private void Awake()
     {
         Instance = this;
 
-        Cards = new List<Card>();
+        InitializeFullDeck();
+        ShuffleDeck();
 
-        DeckGenerator(Suit.Diamond);
-        DeckGenerator(Suit.Club);
-        DeckGenerator(Suit.Heart);
-        DeckGenerator(Suit.Spade);
+        InitializeUserDeck();
 
-        JokerGenerator();
-
-        System.Random r = new System.Random();
-        Cards = Cards.Select(x => new { value = x, order = r.Next() })
-            .OrderBy(x => x.order).Select(x => x.value).ToList();
-
-        //PlayerDeckCreator(Cards.Take(11).ToList());
-
-        SetDeckLastCard(Cards.Last());
+        SetCardFromStack();
     }
 
-    public void GrabDeckCard()
+    public CardHolder SetCardFromStack()
     {
-        CardBuilder card = CurrentCard;
-        CurrentCard = null;
-        card.transform.SetParent(Holder);
-        card.transform.position = Vector3.zero;
-        SetDeckLastCard(Cards.Last());
-        card.GetComponent<Button>().onClick.RemoveAllListeners();
-    }
-
-    private void SetDeckLastCard(Card c)
-    {
+        Card c = Cards.Last();
         GameObject card = GameObject.Instantiate(CardReference, DeckHolder);
-        CardBuilder builder = card.GetComponent<CardBuilder>();
+        CardHolder cardHolder = card.GetComponent<CardHolder>();
+
         string cardValue = "";
         switch (c.CurrentCardValue)
         {
@@ -73,19 +55,48 @@ public class Deck : MonoBehaviour
                 cardValue = ((int)c.CurrentCardValue + 1).ToString();
                 break;
         }
-        builder.BuildCard(cardValue, Suits[(int)c.CurrentSuit]);
-        Cards.Remove(c);
+        cardHolder.BuildCard(cardValue, Suits[(int)c.CurrentSuit], c);
+        this.Cards.Remove(c);
 
-        CurrentCard = builder;
-        CurrentCard.GetComponent<Button>().onClick.AddListener(GrabDeckCard);
+        CurrentStackCard = cardHolder;
+        return cardHolder;
     }
 
-    private void PlayerDeckCreator(List<Card> Cards)
+    private void InitializeFullDeck()
+    {
+        Cards = new List<Card>();
+
+        CardsGenerator(Suit.Diamond);
+        CardsGenerator(Suit.Club);
+        CardsGenerator(Suit.Heart);
+        CardsGenerator(Suit.Spade);
+
+        JokerGenerator();
+    }
+
+    private void ShuffleDeck()
+    {
+        System.Random r = new System.Random();
+        Cards = Cards.Select(x => new { value = x, order = r.Next() })
+            .OrderBy(x => x.order).Select(x => x.value).ToList();
+    }
+
+    private void InitializeUserDeck()
+    {
+        for (int i = 0; i < PlayersCardHolder.Count; i++)
+        {
+            UserDeckCreator(Cards.Take(11).ToList(), PlayersCardHolder[i]);
+        }
+    }
+
+
+    private void UserDeckCreator(List<Card> Cards, Transform Holder)
     {
         for(int i=0; i< Cards.Count; i++)
         {
             GameObject card = GameObject.Instantiate(CardReference, Holder);
-            CardBuilder builder = card.GetComponent<CardBuilder>();
+            CardHolder cardHolder = card.GetComponent<CardHolder>();
+
             string cardValue = "";
             switch (Cards[i].CurrentCardValue)
             {
@@ -108,7 +119,8 @@ public class Deck : MonoBehaviour
                     cardValue = ((int)Cards[i].CurrentCardValue + 1).ToString();
                     break;
             }
-            builder.BuildCard(cardValue, Suits[(int)Cards[i].CurrentSuit]);
+            cardHolder.BuildCard(cardValue, Suits[(int)Cards[i].CurrentSuit], Cards[i]);
+            this.Cards.RemoveAt(i);
         }
     }
 
@@ -121,7 +133,7 @@ public class Deck : MonoBehaviour
         }
     }
 
-    private void DeckGenerator(Suit suit)
+    private void CardsGenerator(Suit suit)
     {
         for (int i = 0; i < 13; i++)
         {

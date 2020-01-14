@@ -3,12 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CardBuilder : MonoBehaviour
+public class CardHolder : MonoBehaviour
 {
+    public Card Card;
+
     public Text TopText, BottomText;
     public Image TopSuit, BottomSuit, MiddleSuit;
 
-    public void BuildCard(string cardValue, Sprite suitSprite)
+    public bool Selected = false;
+    public Possession Possession = Possession.None;
+
+    public void BuildCard(string cardValue, Sprite suitSprite, Card card)
     {
         TopText.text = cardValue;
         BottomText.text = cardValue;
@@ -16,5 +21,7 @@ public class CardBuilder : MonoBehaviour
         TopSuit.sprite = suitSprite;
         BottomSuit.sprite = suitSprite;
         MiddleSuit.sprite = suitSprite;
+
+        Card = card;
     }
 }

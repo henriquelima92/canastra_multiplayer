@@ -87,8 +87,7 @@ GameObject:
   - component: {fileID: 6071627447469010398}
   - component: {fileID: 6071627447469010397}
   - component: {fileID: 6071627447469010396}
-  - component: {fileID: 4349769525516678724}
-  - component: {fileID: 8781866012312829699}
+  - component: {fileID: 4571246139779363051}
   m_Layer: 5
   m_Name: Card
   m_TagString: Untagged
@@ -203,7 +202,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
---- !u!114 &4349769525516678724
+--- !u!114 &4571246139779363051
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -212,28 +211,21 @@ MonoBehaviour:
   m_GameObject: {fileID: 6071627447469010370}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c7d782be759bd9944af601a5ad5dcb21, type: 3}
+  m_Script: {fileID: 11500000, guid: 9a54cf761052d4548b94b3058c325d72, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Card:
+    CurrentSuit: 0
+    PreviousCard: 
+    NextCard: 
+    CurrentCardValue: 0
   TopText: {fileID: 6071627448084355670}
   BottomText: {fileID: 6071627448522876166}
   TopSuit: {fileID: 6071627449019983297}
   BottomSuit: {fileID: 6071627448795545187}
   MiddleSuit: {fileID: 6071627446960667819}
---- !u!114 &8781866012312829699
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6071627447469010370}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_HorizontalFit: 0
-  m_VerticalFit: 0
+  Selected: 0
+  Possession: 0
 --- !u!1 &6071627448084355668
 GameObject:
   m_ObjectHideFlags: 0
