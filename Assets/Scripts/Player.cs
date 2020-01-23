@@ -30,7 +30,7 @@ public class Player : MonoBehaviour
 
     public void AddCardToHand()
     {
-        CardHolder cardHolder = Deck.Instance.CurrentStackCard;
+        CardHolder cardHolder = new CardHolder();//Deck.Instance.CurrentStackCard; FIX THIS
         cardHolder.Possession = MyPossession;
         SetMineCard(cardHolder);
 
